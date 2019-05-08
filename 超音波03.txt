@@ -1,0 +1,30 @@
+#include <LiquidCrystal.h>
+#include <Ultrasonic.h>
+#define TRIGGER_PIN 15
+#define ECHO_PIN 14
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
+void setup() {
+  pinMode(6, INPUT_PULLUP);
+  pinMode(2, INPUT_PULLUP);
+  attachInterrupt(6, int0, RISING); //assign int0
+}
+void loop() {
+  if (digitalRead(6))
+    interrupts();
+  else
+    noInterrupts();
+}
+void int0() {
+  float cmMsec, inMsec;
+  long microsec = ultrasonic.timing();
+  cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM); // 計算距離，單位: 公分
+  inMsec = ultrasonic.convert(microsec, Ultrasonic::IN); // 計算距離，單位: 英吋
+  Serial.print("MS: "); Serial.print(microsec);
+  Serial.print(", CM: "); Serial.print(cmMsec);
+  Serial.print(", IN: "); Serial.println(inMsec);
+  lcd.setCursor(0, 0);
+  lcd.print(cmMsec);
+  lcd.print("cm");
+  delay(1000);
+}
